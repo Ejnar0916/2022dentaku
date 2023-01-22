@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+        <meta charset="UTF=8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>計算機</title>
+        <style>
+          *{box-sizing: border-box;
+          }
+    
+          body {
+            text-align: center;
+            margin-top: 20px;
+          }
+          #container{
+            display: inline-block;
+            background-color: gray;
+            padding: 5px;
+            border: solid 1px rgb(88, 88, 88);
+            box-shadow: 3px 3px 0px black;
+          }
+          #result {
+            height: 30px;
+            width: 105px;
+            border: solid 1px rgb(88, 88, 88);
+            background-color: rgb(215, 229, 241);
+            margin-bottom: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: end;
+            padding: 5px;
+          }
+          table {
+            table-layout: fixed;
+            transform: translate(-1px, -1px);
+          }
+          td {
+            width: 24px;
+            height: 24px;
+          }
+          button {
+            width: 100%;
+            height: 100%;
+            border: solid 1px rgb(88, 88, 88);
+            background-color: white;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 2px 2px 0 black;
+          }
+          button:active{
+            background-color: rgb(31, 82, 150);
+            cursor: pointer;
+            transform: translate(2px, 2px);
+            box-shadow: none;
+          }
+        </style>
+</head>
+<body> 
+  <h1 id="header">計算機</h1>
+    <div id="container">
+      <div id="calc"></div>
+          <div>
+            <input readonly id="result" type="text" value="0">
+          </div>
+          <table>
+            <tbody>
+              <tr>
+                <td colspan="4"><button onclick="c_click()">C</button></td>
+              </tr>
+              <tr>
+                <td><button onclick="num_click(this.innerHTML)">7</button></td>
+                <td><button onclick="num_click(this.innerHTML)">8</button></td>
+                <td><button onclick="num_click(this.innerHTML)">9</button></td>
+                <td><button onclick="ope_click(this.innerHTML)">÷</button></td>
+              </tr>
+              <tr>
+                <td><button onclick="num_click(this.innerHTML)">4</button></td>
+                <td><button onclick="num_click(this.innerHTML)">5</button></td>
+                <td><button onclick="num_click(this.innerHTML)">6</button></td>
+                <td><button onclick="ope_click(this.innerHTML)">×</button></td>
+              </tr>
+              <tr>
+                <td><button onclick="num_click(this.innerHTML)">1</button></td>
+                <td><button onclick="num_click(this.innerHTML)">2</button></td>
+                <td><button onclick="num_click(this.innerHTML)">3</button></td>
+                <td><button onclick="ope_click(this.innerHTML)">-</button></td>
+              </tr>
+              <tr>
+                <td><button onclick="num_click(this.innerHTML)">0</button></td>
+                <td><button onclick="num_click(this.innerHTML)">.</button></td>
+                <td><button onclick="equal_click()">=</button></td>
+                <td><button onclick="ope_click(this.innerHTML)">+</button></td>
+              </tr>
+            </tbody>
+          </table>
+    </div>
+<script>
+    // データ
+var result = "";
+// =で計算したかどうか
+var is_calc = false;
+
+// 初期表示
+window.onload = function () {
+  result = document.getElementById('result');
+};
+
+// Cキー押下
+function c_click(){
+  result.value = "0";
+  is_calc = false;
+}
+
+// 数字キー押下
+function num_click(val){
+  if(is_calc)  result.value = "0";
+  is_calc = false;  
+
+  if(result.value =="0" && val == "0"){
+    result.value = "0";
+  }else if(result.value == "0" && val == "."){
+    result.value = "0.";
+  }else if(result.value == "0"){
+    result.value = val;
+  }else{
+    result.value += val;
+  }
+}
+
+// 演算子キー押下
+function ope_click(val){
+  if(is_calc)  is_calc = false;
+  
+  if(is_ope_last()){
+    result.value = result.value.slice(0, -1) + val;
+  } else {
+    result.value += val;
+  }
+}
+
+// =キークリック
+function equal_click(){
+  if(is_ope_last())  result.value = result.value.slice(0, -1);
+
+  var temp = new Function("return " + result.value.replaceAll("×", "*").replaceAll("÷", "/"))();
+  if(temp == Infinity || Number.isNaN(temp)){
+    result.value = "Error";
+  }else{
+    result.value = temp;
+    is_calc = true;
+  }
+}
+
+// 入力されている値が演算子かどうか
+function is_ope_last(){
+  return ["+","-","×","÷"].includes(result.value.toString().slice(-1));
+}
+</script>
